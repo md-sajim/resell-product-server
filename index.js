@@ -39,6 +39,18 @@ async function run() {
             const result = await userClaction.find(query).toArray();
             res.send(result);
         })
+        app.delete('/buyerdelete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await userClaction.deleteOne(query);
+            res.send(result)
+        })
+        app.delete('/sellerdelete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await userClaction.deleteOne(query);
+            res.send(result)
+        })
         app.post('/product', async (req, res) => {
             const product = req.body;
             const result = await productClaction.insertOne(product);
