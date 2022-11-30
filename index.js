@@ -29,6 +29,16 @@ async function run() {
             const result = await userClaction.findOne(query);
             res.send(result);
         })
+        app.get('/allbuyer', async (req, res) => {
+            const query = {role: "buyer"}
+            const result = await userClaction.find(query).toArray();
+            res.send(result);
+        })
+        app.get('/allseller', async (req, res) => {
+            const query = {role: "seller"}
+            const result = await userClaction.find(query).toArray();
+            res.send(result);
+        })
         app.post('/product', async (req, res) => {
             const product = req.body;
             const result = await productClaction.insertOne(product);
