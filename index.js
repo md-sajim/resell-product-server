@@ -34,11 +34,20 @@ async function run() {
             const result = await productClaction.insertOne(product);
             res.send(result)
         })
-        app.get('/product', async (req, res) => {
+        app.get('/myproduct', async (req, res) => {
             const email = req.query.email;
             const query = { email: email }
-            const result = await productClaction.find(query).limit(10).toArray();
+            const result = await productClaction.find(query).toArray();
             res.send(result);
+        })
+        app.get('/allproduct/:id/:tast', async (req, res) => {
+            const id = req.params.id;
+            const catagory = req.params.tast;
+            console.log(id,catagory)
+
+            const query = {catagory: id}
+            const result = await productClaction.find(query).toArray();
+            res.send({result,catagory});
         })
         app.put('/advatige/:id', async (req, res) => {
             const id = req.params.id;
