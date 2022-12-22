@@ -10,7 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.USER_KEY_DB}:${process.env.USER_PASS_DB}@cluster0.c8jqolf.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri)
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 async function run() {
     try {
@@ -18,6 +17,7 @@ async function run() {
         const productClaction = client.db('resell_product').collection("products");
         const catagoryClaction = client.db('resell_product').collection("catagory");
         const commintsClaction = client.db('resell_product').collection("commints");
+        const bookedClaction = client.db('resell_product').collection("booked");
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await userClaction.insertOne(user);
@@ -30,12 +30,12 @@ async function run() {
             res.send(result);
         })
         app.get('/allbuyer', async (req, res) => {
-            const query = {role: "buyer"}
+            const query = { role: "buyer" }
             const result = await userClaction.find(query).toArray();
             res.send(result);
         })
         app.get('/allseller', async (req, res) => {
-            const query = {role: "seller"}
+            const query = { role: "seller" }
             const result = await userClaction.find(query).toArray();
             res.send(result);
         })
@@ -65,11 +65,11 @@ async function run() {
         app.get('/allproduct/:id/:tast', async (req, res) => {
             const id = req.params.id;
             const catagory = req.params.tast;
-            console.log(id,catagory)
+            console.log(id, catagory)
 
-            const query = {catagory: id}
+            const query = { catagory: id }
             const result = await productClaction.find(query).toArray();
-            res.send({result,catagory});
+            res.send({ result, catagory });
         })
         app.put('/advatige/:id', async (req, res) => {
             const id = req.params.id;
@@ -90,22 +90,39 @@ async function run() {
             const result = await productClaction.deleteOne(query);
             res.send(result)
         })
-        app.get('/advatige',async(req, res)=>{
+        app.get('/advatige', async (req, res) => {
             const query = {
-                advatige:true,
-                avialabol:true,
+                advatige: true,
+                avialabol: true,
             };
             const result = await productClaction.find(query).toArray();
             res.send(result)
         })
-        app.get('/catagory',async(req, res)=>{
+        app.get('/catagory', async (req, res) => {
             const query = {};
             const result = await catagoryClaction.find(query).toArray();
             res.send(result)
         })
-        app.get('/commints',async(req, res)=>{
+        app.get('/commints', async (req, res) => {
             const query = {};
             const result = await commintsClaction.find(query).toArray();
+            res.send(result)
+        })
+        app.post('/order', async (req, res) => {
+            const user = req.body;
+            const result = await bookedClaction.insertOne(user);
+            res.send(result)
+        })
+        app.get('/order', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email }
+            const result = await bookedClaction.find(query).toArray();
+            res.send(result);
+        })
+        app.delete('/orderdelete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await bookedClaction.deleteOne(query);
             res.send(result)
         })
     }
